@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moltbot Pro</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#000;--sf:#1d1d1f;--el:#2c2c2e;--bd:#424245;--tx:#f5f5f7;--mu:#86868b;--ac:#0071e3;--gr:#30d158;--or:#ff9500;--pu:#bf5af2;}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--tx);}
+.hd{background:rgba(29,29,31,.95);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;padding:14px 24px;}
+.hd-in{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+.logo{font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px;}
+.logo-dot{width:28px;height:28px;background:linear-gradient(135deg,#0071e3,#003d82);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.mt{display:flex;gap:6px;background:var(--sf);padding:4px;border-radius:10px;}
+.mb{padding:7px 14px;border-radius:7px;border:none;background:transparent;color:var(--mu);cursor:pointer;font-size:13px;font-weight:500;transition:all .2s;}
+.mb.on{background:var(--ac);color:#fff;}
+.main{max-width:1100px;margin:0 auto;padding:28px 24px 80px;display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start;}
+@media(max-width:800px){.main{grid-template-columns:1fr;}}
+.ms{display:none;}.ms.on{display:contents;}
+.pp{grid-column:1/-1;}
+.lp{display:flex;flex-direction:column;gap:14px;}
+.blk{background:var(--sf);border:1px solid var(--bd);border-radius:16px;overflow:hidden;transition:opacity .3s;}
+.blk.lk{opacity:.4;pointer-events:none;}
+.bh{padding:16px 20px;display:flex;align-items:center;gap:12px;}
+.bn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.n1{background:var(--ac);color:#fff;}.n2{background:var(--gr);color:#fff;}
+.bl{font-size:14px;font-weight:700;}.bs{font-size:11px;color:var(--mu);margin-top:2px;}
+.bg{margin-left:auto;font-size:10px;font-weight:600;padding:3px 8px;border-radius:8px;}
+.br{background:rgba(0,113,227,.2);color:var(--ac);}.bo{background:rgba(134,134,139,.2);color:var(--mu);}
+.bb{padding:0 16px 16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.cd{background:var(--el);border:1.5px solid transparent;border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;}
+.cd:hover{background:#3a3a3c;}.cd.on{background:rgba(0,113,227,.12);border-color:var(--ac);}
+.ci{width:36px;height:36px;margin:0 auto 8px;}.ct{font-size:13px;font-weight:600;}.cs{font-size:10px;color:var(--mu);margin-top:2px;}
+.no{background:var(--el);border:1.5px solid transparent;border-radius:10px;padding:12px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.no:last-child{margin-bottom:0;}.no:hover{background:#3a3a3c;}
+.no.s1{background:rgba(0,113,227,.1);border-color:var(--ac);}
+.no.s2{background:rgba(48,209,88,.1);border-color:var(--gr);}
+.no.hd2{display:none;}
+.ni{width:36px;height:36px;flex-shrink:0;}.ntx{flex:1;}
+.nt{font-size:14px;font-weight:600;}.nd{font-size:11px;color:var(--mu);margin-top:2px;}
+.ck{width:20px;height:20px;border-radius:50%;border:2px solid var(--bd);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.no.s1 .ck{background:var(--ac);border-color:transparent;}
+.no.s2 .ck{background:var(--gr);border-color:transparent;}
+.rp{position:sticky;top:80px;}
+.emp{background:var(--sf);border:1px dashed var(--bd);border-radius:16px;padding:48px 24px;text-align:center;color:var(--mu);}
+.emp svg{width:48px;height:48px;margin:0 auto 16px;opacity:.4;}
+.rc{display:none;background:var(--sf);border:1px solid var(--bd);border-radius:16px;overflow:hidden;}
+.rc.on{display:block;animation:pop .35s cubic-bezier(.4,0,.2,1);}
+@keyframes pop{from{opacity:0;transform:scale(.97) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.rh{background:linear-gradient(135deg,#1a3560,#1d1d1f);padding:24px;}
+.stag{display:inline-flex;align-items:center;gap:5px;background:var(--gr);color:#fff;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;margin-bottom:12px;}
+.rn{font-size:24px;font-weight:800;margin-bottom:8px;}
+.ct2{display:inline-block;background:rgba(0,113,227,.2);color:var(--ac);padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600;margin-right:8px;}
+.rb{padding:20px;}
+.st{font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 10px;}
+.st:first-child{margin-top:0;}
+.pt{background:var(--el);border-radius:10px;padding:12px 14px 12px 42px;font-size:13px;line-height:1.6;position:relative;margin-bottom:8px;}
+.pt::before{content:"";position:absolute;left:12px;top:14px;width:18px;height:18px;background:var(--ac);border-radius:50%;}
+.pt::after{content:"✓";position:absolute;left:17px;top:12px;color:#fff;font-size:11px;font-weight:700;}
+.pi{background:rgba(0,113,227,.05);border:1px solid rgba(0,113,227,.2);border-radius:12px;padding:16px;margin-bottom:8px;}
+.pn{font-size:13px;font-weight:700;color:var(--ac);margin-bottom:8px;}
+.ptx{font-size:13px;line-height:1.75;border-left:3px solid var(--ac);padding-left:12px;}
+.ob{background:var(--el);border-radius:10px;padding:16px;margin-bottom:8px;}
+.oq{font-size:13px;font-weight:700;color:var(--or);margin-bottom:8px;display:flex;gap:8px;}
+.obg{background:var(--or);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.oa{font-size:13px;line-height:1.7;padding-left:28px;}
+.tabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;}
+.tab{background:var(--sf);border:1px solid var(--bd);padding:8px 18px;border-radius:18px;cursor:pointer;white-space:nowrap;font-size:13px;font-weight:500;transition:all .2s;}
+.tab:hover{background:var(--el);}.tab.on{background:var(--ac);border-color:var(--ac);}
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
+.pc{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:20px;cursor:pointer;transition:all .25s;}
+.pc:hover{background:var(--el);border-color:var(--ac);transform:translateY(-3px);}
+.pc.on{background:rgba(0,113,227,.08);border-color:var(--ac);}
+.pbg{display:inline-block;background:var(--ac);color:#fff;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;margin-bottom:10px;}
+.pn2{font-size:16px;font-weight:700;margin-bottom:4px;}.pch{font-size:12px;color:var(--mu);}
+.pd{background:var(--sf);border:1px solid var(--bd);border-radius:16px;overflow:hidden;display:none;}
+.pd.on{display:block;animation:pop .35s cubic-bezier(.4,0,.2,1);}
+.dh{background:linear-gradient(135deg,#1a3560,#1d1d1f);padding:28px;}
+.dn{font-size:24px;font-weight:800;margin-bottom:10px;}
+.ds{padding:20px;border-top:1px solid var(--bd);}
+.dst{font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;}
+.ci2{background:var(--el);border-radius:10px;padding:16px;margin-bottom:8px;}
+.cn{font-size:13px;font-weight:700;color:var(--ac);margin-bottom:8px;}
+.ctx{font-size:13px;line-height:1.7;border-left:3px solid var(--ac);padding-left:12px;}
+</style>
+<svg style="display:none"><defs>
+<symbol id="iz" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z" fill="white"/></symbol>
+<symbol id="istar" viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#30d158"/></symbol>
+<symbol id="imb" viewBox="0 0 64 64"><rect x="8" y="14" width="48" height="30" rx="3" fill="#0071e3"/><rect x="12" y="18" width="40" height="22" rx="1" fill="#1d1d1f"/><rect x="2" y="44" width="60" height="5" rx="2" fill="#005bb5"/></symbol>
+<symbol id="iip" viewBox="0 0 64 64"><rect x="14" y="6" width="36" height="52" rx="4" fill="#0071e3"/><rect x="18" y="12" width="28" height="38" rx="1" fill="#1d1d1f"/><circle cx="32" cy="54" r="2.5" fill="#005bb5"/></symbol>
+<symbol id="iph" viewBox="0 0 64 64"><rect x="18" y="6" width="28" height="52" rx="5" fill="#0071e3"/><rect x="22" y="14" width="20" height="34" rx="1" fill="#1d1d1f"/><rect x="27" y="9" width="10" height="2.5" rx="1.5" fill="#005bb5"/></symbol>
+<symbol id="ist" viewBox="0 0 64 64"><circle cx="32" cy="20" r="11" fill="#0071e3"/><path d="M32 33c-10 0-18 5-18 11v8h36v-8c0-6-8-11-18-11z" fill="#0071e3"/><path d="M18 17l14-9 14 9v9H18z" fill="#ff9500"/></symbol>
+<symbol id="iof" viewBox="0 0 64 64"><rect x="14" y="14" width="36" height="36" rx="3" fill="#0071e3"/><rect x="20" y="20" width="24" height="4" rx="1" fill="white"/><rect x="20" y="28" width="18" height="2" rx="1" fill="white" opacity="0.7"/><circle cx="32" cy="44" r="4" fill="#ff9500"/></symbol>
+<symbol id="icr" viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="none" stroke="#0071e3" stroke-width="3"/><circle cx="22" cy="22" r="5" fill="#ff9500"/><circle cx="42" cy="22" r="5" fill="#30d158"/><circle cx="42" cy="42" r="5" fill="#bf5af2"/><circle cx="22" cy="42" r="5" fill="#ff3b30"/></symbol>
+<symbol id="iel" viewBox="0 0 64 64"><circle cx="32" cy="20" r="11" fill="#0071e3"/><path d="M32 33c-10 0-18 5-18 11v8h36v-8c0-6-8-11-18-11z" fill="#0071e3"/><path d="M24 42 Q32 34 40 42" stroke="#ff9500" stroke-width="3" fill="none" stroke-linecap="round"/><line x1="40" y1="42" x2="44" y2="50" stroke="#ff9500" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="ige" viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="#0071e3"/><path d="M24 32h16M32 24v16" stroke="white" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="ivid" viewBox="0 0 64 64"><rect x="8" y="16" width="36" height="30" rx="3" fill="#0071e3"/><path d="M44 22l12-5v28l-12-5z" fill="#ff9500"/><path d="M22 27l12 5-12 5z" fill="white"/></symbol>
+<symbol id="idoc" viewBox="0 0 64 64"><rect x="14" y="8" width="30" height="38" rx="2" fill="#0071e3"/><path d="M44 8l8 8h-8z" fill="#005bb5"/><rect x="20" y="18" width="18" height="2" rx="1" fill="white"/><rect x="20" y="24" width="18" height="2" rx="1" fill="white"/><rect x="20" y="30" width="12" height="2" rx="1" fill="white"/></symbol>
+<symbol id="ics" viewBox="0 0 64 64"><rect x="8" y="14" width="48" height="30" rx="3" fill="#0071e3"/><rect x="12" y="18" width="40" height="22" rx="1" fill="#1d1d1f"/><path d="M26 28l12 1-12 5z" fill="white"/><rect x="20" y="46" width="24" height="4" rx="2" fill="#ff9500"/></symbol>
+<symbol id="idr" viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="none" stroke="#30d158" stroke-width="3"/><circle cx="22" cy="22" r="5" fill="#ff9500"/><circle cx="42" cy="22" r="5" fill="#30d158"/><circle cx="42" cy="42" r="5" fill="#bf5af2"/><circle cx="22" cy="42" r="5" fill="#ff3b30"/></symbol>
+<symbol id="ipho" viewBox="0 0 64 64"><rect x="8" y="14" width="48" height="36" rx="3" fill="#30d158"/><circle cx="32" cy="32" r="8" fill="white" opacity="0.3"/><circle cx="32" cy="32" r="5" fill="#1d1d1f"/><circle cx="46" cy="20" r="3" fill="#ff9500"/></symbol>
+<symbol id="ive" viewBox="0 0 64 64"><rect x="4" y="16" width="36" height="24" rx="3" fill="#30d158"/><path d="M40 22l12-5v22l-12-5z" fill="#30d158"/><rect x="4" y="44" width="56" height="6" rx="2" fill="#ff9500"/></symbol>
+<symbol id="imu" viewBox="0 0 64 64"><circle cx="22" cy="48" r="8" fill="#30d158"/><circle cx="46" cy="44" r="8" fill="#30d158"/><path d="M30 48V20l24-6v28" stroke="#30d158" stroke-width="4" fill="none" stroke-linecap="round"/></symbol>
+<symbol id="i3d" viewBox="0 0 64 64"><path d="M32 8l24 14v20L32 56 8 42V22z" fill="none" stroke="#bf5af2" stroke-width="3"/><path d="M32 8v48M8 22l24 14 24-14" stroke="#bf5af2" stroke-width="2" opacity="0.6"/></symbol>
+<symbol id="icd" viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="40" rx="3" fill="#bf5af2"/><path d="M20 26l-8 6 8 6M44 26l8 6-8 6" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/><line x1="34" y1="20" x2="30" y2="44" stroke="white" stroke-width="2.5" stroke-linecap="round"/></symbol>
+<symbol id="iai" viewBox="0 0 64 64"><circle cx="32" cy="32" r="20" fill="none" stroke="#bf5af2" stroke-width="3"/><circle cx="24" cy="28" r="4" fill="#bf5af2"/><circle cx="40" cy="28" r="4" fill="#bf5af2"/><path d="M22 40 Q32 48 42 40" stroke="#bf5af2" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="32" cy="14" r="3" fill="#ff9500"/><circle cx="46" cy="22" r="3" fill="#ff9500"/><circle cx="18" cy="22" r="3" fill="#ff9500"/></symbol>
+</defs></svg>
+</head>
+<body>
+<div class="hd"><div class="hd-in">
+  <div class="logo"><div class="logo-dot"><svg width="14" height="14"><use href="#iz"/></svg></div>Moltbot Pro</div>
+  <div class="mt">
+    <button class="mb on" onclick="swMode('guide',this)">🎯 引導推薦</button>
+    <button class="mb" onclick="swMode('product',this)">⚡ 產品直查</button>
+  </div>
+</div></div>
+
+<div class="main">
+<div id="gMode" class="ms on">
+  <div class="lp">
+    <div class="blk">
+      <div class="bh"><div class="bn n1">📦</div><div><div class="bl">顧客想看的商品</div><div class="bs">先選商品，再探索需求</div></div><span class="bg br">必選</span></div>
+      <div class="bb"><div class="g3">
+        <div class="cd" id="pt-mb" onclick="selPT('macbook',this)"><svg class="ci"><use href="#imb"/></svg><div class="ct">MacBook</div><div class="cs">Mac 系列</div></div>
+        <div class="cd" id="pt-ip" onclick="selPT('ipad',this)"><svg class="ci"><use href="#iip"/></svg><div class="ct">iPad</div><div class="cs">iPad 系列</div></div>
+        <div class="cd" id="pt-ph" onclick="selPT('iphone',this)"><svg class="ci"><use href="#iph"/></svg><div class="ct">iPhone</div><div class="cs">iPhone 系列</div></div>
+      </div></div>
+    </div>
+    <div class="blk lk" id="bCust">
+      <div class="bh"><div class="bn n1">👤</div><div><div class="bl">顧客類型</div><div class="bs">選擇顧客身份</div></div><span class="bg bo">選填</span></div>
+      <div class="bb"><div class="g2">
+        <div class="cd" id="ct-st" onclick="selCT('student',this)"><svg class="ci"><use href="#ist"/></svg><div class="ct">學生族群</div><div class="cs">大學生・研究生</div></div>
+        <div class="cd" id="ct-of" onclick="selCT('office',this)"><svg class="ci"><use href="#iof"/></svg><div class="ct">上班族</div><div class="cs">商務人士</div></div>
+        <div class="cd" id="ct-cr" onclick="selCT('creator',this)"><svg class="ci"><use href="#icr"/></svg><div class="ct">創作者</div><div class="cs">設計・影音</div></div>
+        <div class="cd" id="ct-el" onclick="selCT('elder',this)"><svg class="ci"><use href="#iel"/></svg><div class="ct">長輩</div><div class="cs">50歲以上</div></div>
+      </div></div>
+    </div>
+    <div class="blk lk" id="bL1">
+      <div class="bh"><div class="bn n1">1</div><div><div class="bl">使用需求</div><div class="bs">選擇主要需求後即可查看推薦</div></div><span class="bg br">必選</span></div>
+      <div class="bb" id="l1b"></div>
+    </div>
+    <div class="blk lk" id="bL2">
+      <div class="bh"><div class="bn n2">2</div><div><div class="bl">進階需求</div><div class="bs">更專業的使用需求</div></div><span class="bg bo">選填</span></div>
+      <div class="bb" id="l2b"></div>
+    </div>
+  </div>
+  <div class="rp">
+    <div class="emp" id="emp"><svg><use href="#istar"/></svg><div style="font-size:15px;font-weight:600;margin-bottom:8px">選擇使用需求</div><div style="font-size:13px">選擇第一層需求後<br>智慧推薦將出現在這裡</div></div>
+    <div class="rc" id="rc"></div>
+  </div>
+</div>
+<div id="pMode" class="ms">
+  <div class="pp">
+    <div class="tabs" id="tabs"></div>
+    <div class="pg" id="pgrid"></div>
+    <div class="pd" id="pdet"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const PRODUCTS=[{"id": "iphone-17-pro-max", "name": "iPhone 17 Pro Max", "category": "iPhone", "chip": "A19 Pro", "badge": "頂級旗艦", "display": "6.9 吋 ProMotion OLED 120Hz 永遠顯示"}, {"id": "iphone-17-pro", "name": "iPhone 17 Pro", "category": "iPhone", "chip": "A19 Pro", "badge": "專業創作", "display": "6.3 吋 ProMotion OLED 120Hz 永遠顯示"}, {"id": "iphone-17", "name": "iPhone 17", "category": "iPhone", "chip": "A19", "badge": "全能升級", "display": "6.3 吋 ProMotion OLED 120Hz 永遠顯示"}, {"id": "iphone-air", "name": "iPhone Air", "category": "iPhone", "chip": "A19 Pro", "badge": "極致輕薄", "display": "6.5 吋 ProMotion OLED 120Hz 永遠顯示"}, {"id": "iphone-16e", "name": "iPhone 16e", "category": "iPhone", "chip": "A18", "badge": "超值入門", "display": "6.1 吋 OLED"}, {"id": "ipad-air-m3", "name": "iPad Air M3", "category": "iPad", "chip": "M3 (8核CPU+9核GPU)", "badge": "創作首選", "display": "11 吋 / 13 吋 Liquid Retina"}, {"id": "ipad-11-a16", "name": "iPad (第11代)", "category": "iPad", "chip": "A16", "badge": "平價入門", "display": "11 吋 Liquid Retina 2360x1640"}, {"id": "ipad-pro-m5", "name": "iPad Pro M5", "category": "iPad", "chip": "M5 (10核CPU+10核GPU)", "badge": "極致專業", "display": "11 吋 / 13 吋 Ultra Retina XDR"}, {"id": "macbook-air-m4", "name": "MacBook Air M4", "category": "Mac", "chip": "M4", "badge": "最超值筆電", "display": "13.6 吋 / 15.3 吋 Liquid Retina"}, {"id": "mac-studio-2025", "name": "Mac Studio 2025", "category": "Mac", "chip": "M4 Max / M3 Ultra", "badge": "桌面工作站", "display": ""}, {"id": "macbook-pro-14-m4pro", "name": "MacBook Pro 14 吋 M4 Pro", "category": "Mac", "chip": "M4 Pro (12核CPU+20核GPU)", "badge": "專業首選", "display": "14.2 吋 Liquid Retina XDR"}, {"id": "macbook-pro-14-m5", "name": "MacBook Pro 14 吋 M5", "category": "Mac", "chip": "M5 (10核CPU+10核GPU)", "badge": "AI效能飛躍", "display": "14.2 吋 Liquid Retina XDR"}];
+const SELLING_POINTS={"iphone-17-pro-max": ["三鏡頭全 4800 萬畫素（廣角/超廣角/望遠），望遠感光元件增大 56%", "4 倍光學變焦、8 倍光學品質無損變焦（等效 200mm），最高 40 倍數位變焦", "三顆全 4800 萬融合相機，等同八顆專業鏡頭組合", "8 倍光學變焦望遠鏡頭，等效焦距達 200mm，四重反射稜鏡設計", "37 小時影片播放，iPhone 歷來最佳電池續航", "支援 ProRes RAW、Log 2、Genlock 多機同步，業界首款", "全新 1800 萬像素圓形 Center Stage 前置相機，支援變焦旋轉取景", "髮絲紋鋁金屬機身，航太級 7000 系列鋁合金打造", "超瓷晶盾 2 正面抗刮提升 3 倍，背面抗裂提升 4 倍", "12GB RAM + 最高 2TB 儲存，專業創作無上限", "40W 快充 20 分鐘達 50%，MagSafe 25W 無線充電"], "iphone-17-pro": ["三鏡頭全 4800 萬畫素（廣角/超廣角/望遠），望遠感光元件增大 56%", "4 倍光學變焦、8 倍光學品質無損變焦（等效 200mm），最高 40 倍數位變焦", "A19 Pro 晶片 + VC 均溫板，長時間使用不降頻", "支援 ProRes RAW 錄製，首款支援此格式的智慧型手機", "8 倍光學變焦 + 最高 40 倍數位變焦", "Open Gate 全片幅錄影，方便後期裁切", "USB 3.0 傳輸速度，大幅縮短大容量檔案傳輸時間"], "iphone-17": ["全新 A19 晶片 + N1 無線晶片，CPU 效能比 iPhone 13 提升 50%", "雙 4800 萬像素相機系統（主相機+超廣角），解析度達前代 4 倍", "ProMotion 120Hz 可變更新率 + 永遠顯示，歷代 iPhone 最全面位升級", "全新 1800 萬像素 Center Stage 圓形前置相機", "螢幕亮度最高 3000 尼特，超瓷晶盾 2 抗刮提升 3 倍", "40W 快充 20 分鐘達 50%，MagSafe 25W 無線充電", "五款絢麗色彩：薰衣草紫、鼠尾草綠、霧藍、黑、白"], "iphone-air": ["5.6mm 超薄機身、165g 輕量化，等級 5 鈦合金邊框更堅固耐用", "A19 Pro 晶片搭配 12GB RAM，支援硬體加速光線追蹤，3A 遊戲流暢運行", "最高 27 小時影片播放續航，40W 快充 20 分鐘達 50% 電量", "4800 萬主相機 + 1800 萬前置鏡頭，支援 4K HDR 錄影與運動模式", "ProMotion 120Hz 螢幕最高 3000 尼特亮度，超瓷晶盾 2 抗刮性提升 3 倍", "C1X 數據機提供 2 倍資料傳輸速度，功耗比 iPhone 16 Pro 降低 30%"], "iphone-16e": ["A18 晶片完整支援 Apple Intelligence", "6.1 吋 OLED 螢幕，保留劉海設計", "4800 萬畫素主鏡頭，支援 2 倍光學變焦", "影片播放最長 26 小時，搭載自研 C1 數據機晶片功耗更優", "21,000 元起，入門級智慧手機最具吸引力選擇", "支援 Qi 7.5W 無線充電（不支援 MagSafe）"], "ipad-air-m3": ["M3 晶片 3 奈米製程，250 億電晶體，8 核 CPU + 9 核 GPU", "圖形性能比 M1 提升最高 40%，比 M2 提升約 20%", "神經引擎比 M1 快 60%，特別適合 AI 相關任務", "全新 Magic Keyboard 配 14 鍵功能列和更大觸控板", "支援 Apple Pencil Pro，適合插畫設計攝影等創作", "8GB RAM，128GB/256GB/512GB/1TB 儲存選項"], "ipad-11-a16": ["A16 晶片，效能與圖形處理大幅提升", "6GB RAM，128GB/256GB/512GB 三種容量", "11 吋 Liquid Retina 螢幕 2360x1640 解析度", "USB-C 連接埠，相容 Apple Pencil (USB-C)", "入門價格提供不廉價的使用體驗，適合全家使用"], "macbook-air-m4": ["M4 晶片 CPU 效能比 M3 提升 50%，GPU 提升 4 倍，無風扇設計保持靜音", "Premiere Pro 跑分 4774，比 M3 快 23%；Photoshop 跑分 10275，比 M3 快 17%", "16GB RAM 起跳，最高可選配 32GB；容量選配至 2TB，支援雙外接螢幕", "1200 萬畫素 Center Stage 前置鏡頭，視訊自動追蹤、桌上視角、人物居中", "Thunderbolt 4 × 2，最長 24 小時電池續航", "天空藍新配色取代太空灰，價格降低一千元"], "mac-studio-2025": ["M3 Ultra 28/32 核心 CPU，Cinebench 2024 多核領先 M4 Max 約 40%", "60/80 核心 GPU，Blender 渲染領先 M4 Max 約 10%，支援硬體光線追蹤", "統一記憶體最高 512GB（記憶體頻寬雙倍於 M3 Max），適合運行 70B AI 模型", "Final Cut Pro 導出速度最快，Motion 渲染領先 M4 Max 約 24 秒", "多軌 4K 影片播放可達 14 條（M4 Max 僅 8 條），專業創作零瓶頸", "Thunderbolt 5 連接埠，提供更快資料傳輸和外接設備支援"], "macbook-pro-14-m5": ["M5 晶片 AI 效能達前代 3.5 倍，每核心內建神經網路加速器", "GPU 圖形處理比 M4 提升 45%，Geekbench GPU 量化分數比 M4 Pro 高 53%", "統一記憶體頻寬 153GB/s（比 M4 提升 30%），最高可選配 32GB", "支援第三代光線追蹤，適合 AI 開發、影像處理、大語言模型推論", "最長 24 小時電池續航，SSD 最高可選配 4TB，讀寫速度比 M4 快 2 倍", "Liquid Retina XDR 顯示器，六揚聲器音響系統"], "ipad-pro-m5": ["M5 晶片 AI 效能比 M4 快 3.5 倍，比 M1 快 5.6 倍", "新一代 GPU 每核心內建神經網路加速器，支援第三代光線追蹤", "統一記憶體頻寬 153GB/s，處理大型 AI 模型、多軌影片剪輯流暢不卡", "11 吋 / 13 吋 Tandem OLED 極致顯示技術，最高 1600 尼特亮度", "ProMotion 120Hz 自適應刷新率，Apple Pencil Pro 完美支援", "超薄 5.1mm 機身，全天候電池續航"], "apple-watch-ultra-3": ["49mm 鈦金屬錶殼，藍寶石玻璃顯示器", "電池續航 42 小時，低耗電模式 72 小時", "更窄邊框廣視角 OLED 螢幕，最高 3000 尼特", "S10 晶片，5G 連線，衛星通訊求救功能", "血壓偵測功能（趨勢提醒），睡眠分數功能", "快速充電 15 分鐘可用 12 小時"], "apple-watch-s11": ["歷來最纖薄 Apple Watch，抗刮能力是 S10 雙倍", "電池續航 24 小時，低耗電模式 38 小時", "S10 晶片 + 5G 連線 + 血壓偵測 + 睡眠分數", "心電圖 + 血氧濃度 + 體溫感測 + 跌倒偵測", "鋁金屬與鈦金屬兩種材質可選，四/三色選擇"], "apple-watch-se3": ["搭載 S10 晶片，與 Ultra 3 和 S11 相同", "首次支援隨顯螢幕，不抬手腕也能看時間", "首次支援腕溫度感測，生命徵象 App 更多健康資訊", "首次支援手指操控（雙指互點、翻轉手腕）", "首次支援睡眠偵測/分數，包含睡眠呼吸中止症提醒", "內建喇叭可直接播放音樂 + 5G 連線", "玻璃強度比 SE 2 提升 4 倍"], "airpods-pro-3": ["主動式降噪效果比 AirPods Pro 2 提升最高達 2 倍", "全新多孔聲學架構，更寬廣音場和更清晰人聲", "五種尺寸泡棉耳塞套，矽膠外殼加纖薄泡棉更舒適", "心率感測器（每秒 256 次紅外線），支援 50 種體能訓練追蹤", "Apple Intelligence 即時翻譯功能，雙方佩戴可對話翻譯", "U2 晶片充電盒，精確尋找距離擴大 1.5 倍", "防護等級升級 IP54 → IP57，防塵抗汗抗水更強", "支援臨床級助聽器功能，適用輕度至中度聽力受損"], "macbook-pro-14-m4pro": ["M4 Pro 12核CPU + 20核GPU，多執行緒效能比 M3 Pro 提升 20%", "Cinebench R23 多核跑分比 M3 Pro 快 25%，Blender GPU 渲染領先約 30%", "20核GPU 圖形效能比 M3 Pro 提升 30%，支援硬體光線追蹤", "標配 24GB 統一記憶體（記憶體頻寬 120GB/s），最高可選配 64GB", "最長 24 小時電池續航，主動散熱可長時間高負載運作不降頻", "Liquid Retina XDR 顯示器，ProMotion 自適應 120Hz 刷新率"]};
+const TARGET_CUSTOMERS={"iphone-17-pro-max": [{"customer": "專業攝影/影片創作者", "pitch": "三顆全 4800 萬鏡頭加上 8 倍光學望遠，等效 200mm，從超廣角到長焦一機搞定。支援 ProRes RAW 和 Genlock，發表會的影片全都是用 17 Pro 拍的。"}, {"customer": "重度手遊玩家", "pitch": "VC 均溫板散熱是 iPhone 首次導入，長時間玩遊戲不會降頻，加上 A19 Pro 晶片 GPU 提升 2 倍，3A 遊戲都能流暢運行。"}, {"customer": "商務人士", "pitch": "37 小時電池續航是 iPhone 歷來最長，40W 快充 20 分鐘就回到 50%。12GB RAM 多工處理更順暢，2TB 儲存不用擔心空間不夠。"}], "iphone-17-pro": [{"customer": "想要 Pro 相機但偏好較小尺寸", "pitch": "跟 Pro Max 完全相同的三鏡頭系統，8 倍望遠也有，但 6.3 吋更好單手操作。ProRes RAW 錄影功能也完全相同。"}], "iphone-17": [{"customer": "年輕族群/一般消費者", "pitch": "今年標準版升級超有感，120Hz 螢幕、永遠顯示、雙 4800 萬鏡頭全到位，五款顏色很搶眼。A19 晶片 Apple Intelligence 全功能支援。"}, {"customer": "從 iPhone 13/14 升級的用戶", "pitch": "CPU 效能比 iPhone 13 提升 50%，GPU 速度提升 2.1 倍，螢幕從 60Hz 直接跳到 120Hz，差距非常明顯，是非常值得升級的時間點。"}], "iphone-air": [{"customer": "時尚輕量派", "pitch": "5.6mm 超薄 165g 輕量設計，等級 5 鈦合金邊框堅固又有質感。ProMotion 120Hz 螢幕搭配 3000 尼特峰值亮度，陽光下依然清晰。這是 iPhone 史上最輕、最薄、最有個性的機型。"}, {"customer": "效能玩家", "pitch": "A19 Pro 晶片 + 12GB RAM，支援硬體加速光線追蹤，3A 遊戲流暢運行。27 小時續航 + 40W 快充半小時滿一半，C1X 數據機傳輸速度快 2 倍、功耗降 30%。"}, {"customer": "攝影愛好者", "pitch": "4800 萬主相機 + 1800 萬前置鏡頭，支援 4K HDR 錄影、運動模式穩定防震。超薄機身不妥協相機品質，隨手拍出專業級作品。"}], "iphone-16e": [{"customer": "預算有限的學生/年輕族群", "pitch": "兩萬一就能擁有 A18 晶片和完整 Apple Intelligence，4800 萬鏡頭拍照品質不輸中階機。進入 Apple 生態系最划算的方式。"}, {"customer": "從舊 iPhone SE/8/X 升級的用戶", "pitch": "從 SE 升級你會感受到巨大差異，6.1 吋 OLED 螢幕、4800 萬鏡頭、26 小時續航。C1 數據機功耗更優，省電效果明顯。"}], "ipad-air-m3": [{"customer": "設計師/創作者", "pitch": "M3 晶片配 Apple Pencil Pro，Procreate、Affinity Designer 都跑得飛快。圖形性能比 M1 提升 40%，幾乎是接近 iPad Pro 的體驗。"}, {"customer": "大學生", "pitch": "Apple Pencil 記筆記、標注 PDF，搭配新 Magic Keyboard 寫報告，一台抵筆電。M3 晶片至少可以用四五年不過時。"}, {"customer": "商務辦公人士", "pitch": "新版 Magic Keyboard 配觸控板和 14 鍵功能列，操作體驗接近筆電。處理郵件、編輯文件、製作簡報都很順手。"}], "ipad-11-a16": [{"customer": "家庭使用者", "pitch": "客廳看影片、小孩玩教育 App、長輩上網看新聞，一台搞定全家需求。價格一萬出頭，CP 值遠超同級 Android 平板。"}, {"customer": "首次購買平板的新用戶", "pitch": "A16 晶片確保不廉價的使用體驗，128GB 起跳容量夠用，USB-C 連接方便。進入 iPad 生態系最好的起點。"}], "macbook-air-m4": [{"customer": "學生/輕度工作者", "pitch": "16GB RAM 起跳，M4 效能約 M1 的兩倍，寫報告、簡報、輕度剪輯都沒問題。無風扇設計圖書館用完全安靜。降價後是目前最值得買的筆電。"}, {"customer": "需要雙螢幕的辦公族", "pitch": "M4 版首次支援不蓋螢幕就能接兩台外接顯示器，對需要多視窗工作的人是重大升級。"}], "mac-studio-2025": [{"customer": "影片製作/3D 渲染專業人士", "pitch": "M3 Ultra 最高 512GB 統一記憶體，在 AI 訓練、影片編輯、3D 渲染領域無對手。投資 Mac Studio 就是投資你的時間與創造力。"}, {"customer": "AI/ML 開發者", "pitch": "處理大型數據集和計算密集型任務，M3 Ultra 的記憶體和算力是目前 Mac 生態最強選擇。"}], "macbook-pro-14-m5": [{"customer": "AI 應用開發者", "pitch": "AI 效能達前代 3.5 倍，統一記憶體頻寬 153GB/s 可以本地端跑大型 AI 模型。"}, {"customer": "專業內容創作者", "pitch": "10 核 GPU 每核心內建神經網路加速器，圖形處理提升 45%。24 小時續航外出工作一整天。"}], "airpods-pro-3": [{"customer": "健身運動愛好者", "pitch": "心率感測器支援 50 種體能訓練追蹤，IP57 防水防汗更強。泡棉耳塞運動中更穩定不掉落。"}, {"customer": "經常出國/國際溝通的人", "pitch": "Apple Intelligence 即時翻譯功能，雙方佩戴 AirPods Pro 3 就能直接對話翻譯，出國溝通超方便。"}, {"customer": "聽力保護需求者", "pitch": "支援臨床級助聽器功能，適用輕度至中度聽力受損。還有聽力測試和聽力年齡追蹤。"}], "apple-watch-ultra-3": [{"customer": "戶外運動/潛水愛好者", "pitch": "49mm 鈦金屬 + 藍寶石玻璃，42 小時續航、衛星通訊求救，從深潛到登山都能應對。"}], "apple-watch-s11": [{"customer": "注重健康管理的人", "pitch": "心電圖 + 血氧 + 血壓趨勢 + 體溫感測 + 睡眠分數 + 跌倒偵測，最全面的健康監測手錶。"}], "apple-watch-se3": [{"customer": "Apple 生態系入門者", "pitch": "S10 晶片性能不打折，首次有隨顯螢幕和手指操控，價格最親民但功能滿載，進入 Apple Watch 最超值的選擇。"}], "macbook-pro-14-m4pro": [{"customer": "影像/影片創作者", "pitch": "20核GPU 比 M3 Pro 快 30%，Final Cut Pro 剪輯 4K 流暢不掉幀。24GB 記憶體讓 Photoshop + Premiere 同時開著不卡頓，主動散熱長時間渲染也不降速。"}, {"customer": "設計師/3D 創作者", "pitch": "M4 Pro 20核GPU 支援硬體光線追蹤，Blender、Cinema 4D 渲染速度大幅提升。24GB 記憶體處理高解析度素材和複雜場景都不是問題。"}, {"customer": "程式開發者", "pitch": "12核CPU 編譯速度極快，24GB 統一記憶體同時跑多個虛擬機、Docker 容器不卡頓。比 Air 多了主動散熱，跑長時間 build 不會降頻。"}, {"customer": "商務專業人士", "pitch": "效能比 Air 高出一個級距，同時處理大型試算表、視訊會議、多應用切換完全沒壓力。24小時續航出差一整天免帶充電器。"}]};
+const OBJECTIONS={"iphone-17-pro-max": [{"objection": "太貴了", "response": "Pro Max 的相機系統等於帶了八顆專業鏡頭出門，加上 VC 均溫板散熱和 37 小時續航，用舊機折抵的話實際價差比想像小很多。要不要我幫你算一下折抵後的價格？"}, {"objection": "跟 16 Pro Max 差不多，不值得換", "response": "最大差異是望遠從 5 倍升到 8 倍，感光元件增大 56%，低光拍攝差距非常明顯。另外 VC 均溫板散熱徹底解決長時間使用降頻問題，還新增 ProRes RAW 錄影功能。"}, {"objection": "鋁合金不如鈦金屬高級", "response": "這次用的是航太級 7000 系列鋁合金加上髮絲紋處理，不僅散熱效能更好，外觀質感也非常出色。而且 VC 均溫板需要搭配金屬機殼才能發揮最佳散熱效果。"}], "iphone-17-pro": [{"objection": "Pro 跟 Pro Max 差在哪？", "response": "相機系統完全一樣，三顆全 4800 萬 + 8 倍望遠都有。主要差在螢幕大小、電池續航和最高儲存。如果不需要 2TB 和 37 小時續航，Pro 省下的預算可以搭配其他配件。"}], "iphone-17": [{"objection": "標準版值得買嗎？跟 Pro 差很多？", "response": "今年 iPhone 17 升級幅度非常大，首次有 120Hz ProMotion 和永遠顯示，超廣角也升到 4800 萬，日常體驗已經非常接近 Pro。主要差在望遠鏡頭和 ProRes 錄影。"}], "iphone-air": [{"objection": "這麼薄會不會很容易壞？續航會不會不好？", "response": "等級 5 鈦合金邊框比一般鋁合金更堅固，超瓷晶盾 2 抗刮性提升 3 倍、背面抗裂提升 4 倍。雖然超薄但續航達 27 小時影片播放，比 iPhone 17 還長，40W 快充 20 分鐘就能充到 50%。"}, {"objection": "iPhone Air 效能會不會比較差？", "response": "完全不會！iPhone Air 搭載 A19 Pro 晶片（跟 17 Pro 同級），12GB RAM 比 17 Pro 還多，支援硬體加速光線追蹤。唯一差異是相機系統：Air 是單主鏡頭 4800 萬，Pro 是三鏡頭全 4800 萬。效能、螢幕、續航都在同一水準。"}, {"objection": "iPhone Air 跟 iPhone 17 Pro 怎麼選？", "response": "如果追求極致輕薄、時尚質感，選 Air（5.6mm / 165g）。如果需要三鏡頭系統、ProRAW 拍攝、更專業的攝影功能，選 17 Pro。兩者晶片、螢幕、續航都在同一水準，主要差在厚度、重量和相機系統。"}], "iphone-16e": [{"objection": "21000 但沒有動態島和 MagSafe", "response": "iPhone 16e 的定位就是用最親民的價格體驗 A18 晶片和 Apple Intelligence。如果預算有限，這些功能的缺少不影響日常使用，4800 萬鏡頭和 26 小時續航才是重點。"}], "ipad-air-m3": [{"objection": "為什麼不直接買 iPad Pro？", "response": "iPad Air M3 的性能已經覆蓋 99% 的日常需求。Pro 多出的 OLED 螢幕和 M 系列高階晶片，只有專業影像工作者才真正用得到差異。省下的預算拿來買 Apple Pencil Pro 和鍵盤更實用。"}], "macbook-air-m4": [{"objection": "需要買 Pro 嗎？Air 夠用嗎？", "response": "M4 Air 的 Premiere Pro 跑分 4774，已經非常接近 M4 Pro（4839），只差 1.4%。Photoshop 跑分 10275 也只比 Pro 低 2.7%。除非需要長時間剪輯 4K/8K、3D 渲染這種持續高負載，否則 Air 的無風扇設計更輕薄安靜，價格還便宜一萬多。"}, {"objection": "M4 Air 跟 M3 Air 差多少？值得升級嗎？", "response": "CPU 效能提升 50%，GPU 提升 4 倍。Premiere Pro 快 23%、Photoshop 快 17%、Blender GPU 渲染快 28%。記憶體從 8GB 起跳升級到 16GB 起跳，還多了雙外接螢幕支援。如果你常用專業軟體，升級很有感。"}], "airpods-pro-3": [{"objection": "已經有 Pro 2 了需要換嗎？", "response": "降噪效果直接翻倍，泡棉耳塞更舒適，新增心率感測和即時翻譯。如果你經常運動或有國際溝通需求，升級感會非常明顯。"}], "apple-watch-ultra-3": [{"objection": "Ultra 太貴了，S11 不夠嗎？", "response": "Ultra 3 的 42 小時續航是 S11 的將近 2 倍，鈦金屬+藍寶石玻璃也更耐用。如果你有戶外運動、潛水需求或單純希望少充電，Ultra 的價差是值得的。"}], "apple-watch-se3": [{"objection": "SE 3 跟 S11 差在哪？", "response": "SE 3 這次升級很大，首次有隨顯螢幕、腕溫度感測、手指操控、睡眠偵測。但沒有心電圖和血氧濃度。如果不需要這兩個醫療級功能，SE 3 的性價比非常高。"}], "macbook-pro-14-m4pro": [{"objection": "M4 Pro 和 M4 Air 差多少？買 Air 就夠了嗎？", "response": "專業軟體差異不大（Premiere Pro 只快 1.4%），但 M4 Pro 有主動散熱，長時間高負載不會降頻。20核GPU 比 Air 的 10核快約 60%，適合 3D 渲染、影片剪輯這種 GPU 密集工作。24GB 記憶體起跳，多工處理更流暢。"}, {"objection": "M4 Pro 還是買 M5 比較划算？", "response": "看用途。M5 的 AI 效能大幅提升（3.5 倍），適合 AI 開發、重度影像處理、跑大語言模型。但影片剪輯、程式開發、3D 建模，M4 Pro 的 20核GPU 已非常充裕，價格還低一個檔次，CP值更高。"}], "macbook-pro-14-m5": [{"objection": "M5 比 M4 Pro 強在哪？值得多花錢嗎？", "response": "M5 的 Neural Engine 和 GPU AI 加速器讓 AI 工作負載快 3.5 倍，Geekbench GPU AI 跑分比 M4 Pro 高 53%。記憶體頻寬 153GB/s 比 M4 Pro 快 27%。但傳統 GPU 運算 M4 Pro 的 20核仍勝出。如果主要做 AI 開發、跑本地 LLM，選 M5；如果是影片剪輯、3D 渲染，M4 Pro 更划算。"}, {"objection": "為什麼 M5 GPU 只有 10 核，M4 Pro 有 20 核？", "response": "M5 的每個 GPU 核心都內建神經網路加速器，架構更新、單核效能更強，專注在 AI 運算。M4 Pro 的 20 核是傳統 GPU 設計，適合圖形渲染。兩者定位不同：M5 強在 AI，M4 Pro 強在傳統創作。"}], "mac-studio-2025": [{"objection": "Mac Studio 跟 MacBook Pro M4 Pro 怎麼選？", "response": "Studio 的 M3 Ultra CPU 多核跑分領先 M4 Pro 約 40%，GPU 更是 60/80 核（M4 Pro 只有 20 核）。最高 512GB 記憶體可以跑 70B 參數的 AI 模型。但是桌機不能攜帶，價格也貴很多。如果需要極致效能、處理超大型專案，選 Studio；如果需要移動工作，選 MacBook Pro。"}]};
+
+const L1=[
+  {id:'l1-ge',icon:'ige',title:'一般使用 / 上網瀏覽',desc:'日常使用、社群媒體、瀏覽器',hide:[]},
+  {id:'l1-vi',icon:'ivid',title:'看影片追劇',desc:'YouTube、Netflix、串流平台',hide:[]},
+  {id:'l1-do',icon:'idoc',title:'文書處理',desc:'Word、Excel、PowerPoint',hide:['iphone']},
+  {id:'l1-co',icon:'ics',title:'線上課程學習',desc:'遠距學習、視訊會議、筆記',hide:['iphone']}
+];
+const L2=[
+  {id:'l2-dr',icon:'idr',title:'繪圖 2D',desc:'Procreate、Illustrator',hide:[]},
+  {id:'l2-ph',icon:'ipho',title:'影像編輯',desc:'Photoshop、Lightroom',hide:[]},
+  {id:'l2-ve',icon:'ive',title:'影片編輯',desc:'Final Cut Pro、Premiere',hide:[]},
+  {id:'l2-mu',icon:'imu',title:'音樂製作',desc:'Logic Pro、GarageBand',hide:['iphone']},
+  {id:'l2-3d',icon:'i3d',title:'3D 建模構圖',desc:'Cinema 4D、Blender',hide:['iphone']},
+  {id:'l2-cd',icon:'icd',title:'程式開發',desc:'Xcode、VSCode',hide:['iphone']},
+  {id:'l2-ai',icon:'iai',title:'大語言模型開發',desc:'AI 訓練、本地 LLM',hide:['iphone']}
+];
+
+// === Phase 2: 根據實測數據調整推薦規則 ===
+// 原則：
+// - M4 Pro 的 20核GPU 在傳統圖形運算勝過 M5 的 10核GPU
+// - M5 優勢在 AI 加速器，適合 AI 開發、跑 LLM
+// - 3D 建模主要吃 GPU 核心數 → 推薦 M4 Pro
+// - AI 開發吃 Neural Engine 和記憶體頻寬 → 推薦 M5
+const RULES={
+  macbook:{
+    // 第一層 → 入門款
+    'l1-ge':'macbook-air-m4','l1-vi':'macbook-air-m4','l1-do':'macbook-air-m4','l1-co':'macbook-air-m4',
+    // 第二層進階 → Pro 等級（根據實測數據調整）
+    'l2-dr':'macbook-pro-14-m4pro',  // 繪圖 2D
+    'l2-ph':'macbook-pro-14-m4pro',  // 影像編輯
+    'l2-ve':'macbook-pro-14-m4pro',  // 影片剪輯
+    'l2-mu':'macbook-pro-14-m4pro',  // 音樂製作
+    'l2-3d':'macbook-pro-14-m4pro',  // 3D 建模 ← 改為 M4 Pro（GPU 核心數優勢）
+    'l2-cd':'macbook-pro-14-m4pro',  // 程式開發
+    'l2-ai':'macbook-pro-14-m5'      // AI 開發 ← 改為 M5（AI 加速器優勢）
+  },
+  ipad:{
+    'l1-ge':'ipad-11-a16','l1-vi':'ipad-11-a16','l1-do':'ipad-air-m3','l1-co':'ipad-air-m3',
+    'l2-dr':'ipad-pro-m5','l2-ph':'ipad-pro-m5','l2-ve':'ipad-pro-m5',
+    'l2-mu':'ipad-pro-m5','l2-3d':'ipad-pro-m5','l2-cd':'ipad-pro-m5','l2-ai':'ipad-pro-m5'
+  },
+  iphone:{
+    'l1-ge':'iphone-17','l1-vi':'iphone-17',
+    'l2-dr':'iphone-17-pro','l2-ph':'iphone-17-pro','l2-ve':'iphone-17-pro'
+  }
+};
+
+// 客群微調（只在精確 match 時覆蓋）
+const CUST={
+  macbook:{
+    student:{'l1-ge':'macbook-air-m4','l1-do':'macbook-air-m4'},
+    creator:{'l2-3d':'macbook-pro-14-m4pro','l2-ai':'macbook-pro-14-m5'}  // 創作者：3D 推 M4 Pro，AI 推 M5
+  },
+  ipad:{
+    student:{'l1-co':'ipad-air-m3'},
+    elder:{'l1-ge':'ipad-11-a16','l1-vi':'ipad-11-a16'},
+    creator:{'l2-dr':'ipad-pro-m5','l2-ve':'ipad-pro-m5'}
+  },
+  iphone:{
+    student:{'l1-ge':'iphone-16e'},
+    creator:{'l1-vi':'iphone-17-pro-max','l2-ve':'iphone-17-pro-max','l2-ph':'iphone-17-pro-max'},
+    elder:{'l1-ge':'iphone-17'}
+  }
+};
+
+let S={pt:null,ct:null,l1:null,l2:null};
+
+document.addEventListener('DOMContentLoaded',()=>{
+  renderLayer('l1b',L1,1);
+  renderLayer('l2b',L2,2);
+  initProd();
+});
+
+function renderLayer(id,items,layer){
+  document.getElementById(id).innerHTML=items.map(o=>`
+    <div class="no" data-id="${o.id}" data-hide="${o.hide.join(',')}" onclick="selNeed(${layer},'${o.id}',this)">
+      <svg class="ni"><use href="#${o.icon}"/></svg>
+      <div class="ntx"><div class="nt">${o.title}</div><div class="nd">${o.desc}</div></div>
+      <div class="ck"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div>
+    </div>`).join('');
+}
+
+function swMode(m,btn){
+  document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.querySelectorAll('.ms').forEach(s=>s.classList.remove('on'));
+  document.getElementById(m==='guide'?'gMode':'pMode').classList.add('on');
+}
+function unlock(id){document.getElementById(id).classList.remove('lk');}
+function lock(id){document.getElementById(id).classList.add('lk');}
+
+function selPT(pt,el){
+  if(S.pt===pt){S={pt:null,ct:null,l1:null,l2:null};el.classList.remove('on');lock('bCust');lock('bL1');lock('bL2');hideRes();return;}
+  S={pt:pt,ct:null,l1:null,l2:null};
+  document.querySelectorAll('#pt-mb,#pt-ip,#pt-ph').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  document.querySelectorAll('#ct-st,#ct-of,#ct-cr,#ct-el').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#l1b .no,#l2b .no').forEach(o=>o.classList.remove('s1','s2'));
+  filterNeeds(pt);
+  unlock('bCust');unlock('bL1');lock('bL2');
+  hideRes();
+}
+
+function selCT(ct,el){
+  if(S.ct===ct){S.ct=null;el.classList.remove('on');}
+  else{S.ct=ct;document.querySelectorAll('#ct-st,#ct-of,#ct-cr,#ct-el').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+  updRes();
+}
+
+function selNeed(layer,id,el){
+  const key=layer===1?'l1':'l2';
+  const cls=layer===1?'s1':'s2';
+  const cont=el.closest('.bb');
+  if(S[key]===id){
+    S[key]=null;el.classList.remove(cls);
+    if(layer===1){S.l2=null;document.querySelectorAll('#l2b .no').forEach(o=>o.classList.remove('s2'));lock('bL2');}
+  }else{
+    S[key]=id;
+    cont.querySelectorAll('.no').forEach(o=>o.classList.remove(cls));el.classList.add(cls);
+    if(layer===1)unlock('bL2');
+  }
+  updRes();
+}
+
+function filterNeeds(pt){
+  document.querySelectorAll('#l1b .no,#l2b .no').forEach(el=>{
+    const h=el.dataset.hide?el.dataset.hide.split(','):[];
+    el.classList.toggle('hd2',h.includes(pt));
+  });
+}
+
+function updRes(){
+  if(!S.pt||!S.l1){hideRes();return;}
+  const need=S.l2||S.l1;
+  const ptR=RULES[S.pt]||{};
+  let pid=ptR[need]||ptR[S.l1];
+  if(!pid){hideRes();return;}
+  // 客群微調：只在精確 match 時覆蓋
+  if(S.ct){
+    const cr=CUST[S.pt]?.[S.ct]||{};
+    if(cr[need])pid=cr[need];
+  }
+  const prod=PRODUCTS.find(p=>p.id===pid);
+  if(!prod){hideRes();return;}
+  const pts=(SELLING_POINTS[prod.id]||[]).slice(0,4);
+  const custs=TARGET_CUSTOMERS[prod.id]||[];
+  const cust=S.ct?custs.find(c=>c.customer.includes(S.ct==='student'?'學生':S.ct==='office'?'商務':S.ct==='creator'?'創作':'長輩'))||custs[0]:custs[0];
+  const objs=OBJECTIONS[prod.id]||[];
+  document.getElementById('emp').style.display='none';
+  const rc=document.getElementById('rc');
+  rc.innerHTML=`
+    <div class="rh">
+      <div class="stag"><svg width="12" height="12"><use href="#istar"/></svg> 智慧推薦</div>
+      <div class="rn">${prod.name}</div>
+      <span class="ct2">${prod.chip}</span><span style="font-size:12px;color:var(--mu)">${prod.display}</span>
+    </div>
+    <div class="rb">
+      ${pts.length?`<div class="st">核心賣點</div>${pts.map(p=>`<div class="pt">${p}</div>`).join('')}`:''}`+
+      `${cust?`<div class="st">推薦話術</div><div class="pi"><div class="pn">${cust.customer}</div><div class="ptx">${cust.pitch}</div></div>`:''}
+      ${objs.length?`<div class="st">異議處理</div>${objs.map(o=>`<div class="ob"><div class="oq"><div class="obg">Q</div>${o.objection}</div><div class="oa">${o.response}</div></div>`).join('')}`:''}
+    </div>`;
+  rc.classList.remove('on');void rc.offsetWidth;rc.classList.add('on');
+}
+
+function hideRes(){
+  document.getElementById('emp').style.display='block';
+  document.getElementById('rc').classList.remove('on');
+}
+
+function initProd(){
+  const cats=[{id:'all',name:'全部'},{id:'iPhone',name:'iPhone'},{id:'iPad',name:'iPad'},{id:'Mac',name:'Mac'}];
+  document.getElementById('tabs').innerHTML=cats.map(c=>`<div class="tab ${c.id==='all'?'on':''}" onclick="filCat('${c.id}',this)">${c.name}</div>`).join('');
+  renderGrid('all');
+}
+
+function filCat(cat,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  renderGrid(cat);document.getElementById('pdet').classList.remove('on');
+}
+
+function renderGrid(cat){
+  const list=cat==='all'?PRODUCTS:PRODUCTS.filter(p=>p.category===cat);
+  document.getElementById('pgrid').innerHTML=list.map(p=>`
+    <div class="pc" onclick="selProd('${p.id}',this)">
+      <div class="pbg">${p.badge}</div><div class="pn2">${p.name}</div><div class="pch">${p.chip}</div>
+    </div>`).join('');
+}
+
+function selProd(id,el){
+  const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
+  document.querySelectorAll('.pc').forEach(c=>c.classList.remove('on'));el.classList.add('on');
+  const pts=SELLING_POINTS[p.id]||[],custs=TARGET_CUSTOMERS[p.id]||[],objs=OBJECTIONS[p.id]||[];
+  const det=document.getElementById('pdet');
+  det.innerHTML=`
+    <div class="dh"><div class="dn">${p.name}</div><span class="ct2">${p.chip}</span><span style="font-size:12px;color:var(--mu)">${p.display}</span></div>
+    ${pts.length?`<div class="ds"><div class="dst">核心賣點 (${pts.length}個)</div>${pts.map(x=>`<div class="pt">${x}</div>`).join('')}</div>`:''}
+    ${custs.length?`<div class="ds"><div class="dst">目標客群 (${custs.length}組)</div>${custs.map(c=>`<div class="ci2"><div class="cn">${c.customer}</div><div class="ctx">${c.pitch}</div></div>`).join('')}</div>`:''}
+    ${objs.length?`<div class="ds"><div class="dst">異議處理 (${objs.length}個)</div>${objs.map(o=>`<div class="ob"><div class="oq"><div class="obg">Q</div>${o.objection}</div><div class="oa">${o.response}</div></div>`).join('')}</div>`:''}`;
+  det.classList.remove('on');void det.offsetWidth;det.classList.add('on');
+  setTimeout(()=>det.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+</script>
+</body></html>
