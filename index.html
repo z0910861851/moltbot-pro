@@ -11,7 +11,15 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Moltbot Pro</title>
+<meta name="description" content="Apple 產品智慧推薦銷售助手">
+<meta name="theme-color" content="#0071e3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="蘋果銷售小工具">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon-192.svg">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<title>蘋果銷售小工具</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--bg:#000;--sf:#1d1d1f;--el:#2c2c2e;--bd:#424245;--tx:#f5f5f7;--mu:#86868b;--ac:#0071e3;--gr:#30d158;--or:#ff9500;--pu:#bf5af2;}
@@ -119,7 +127,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg
 </head>
 <body>
 <div class="hd"><div class="hd-in">
-  <div class="logo"><div class="logo-dot"><svg width="14" height="14"><use href="#iz"/></svg></div>Moltbot Pro</div>
+  <div class="logo"><div class="logo-dot"><svg width="14" height="14"><use href="#iz"/></svg></div>蘋果銷售小工具</div>
   <div class="mt">
     <button class="mb on" onclick="swMode('guide',this)">🎯 引導推薦</button>
     <button class="mb" onclick="swMode('product',this)">⚡ 產品直查</button>
@@ -182,13 +190,18 @@ const L1=[
   {id:'l1-co',icon:'ics',title:'線上課程學習',desc:'遠距學習、視訊會議、筆記',hide:['iphone']}
 ];
 const L2=[
-  {id:'l2-dr',icon:'idr',title:'繪圖 2D',desc:'Procreate、Illustrator',hide:[]},
-  {id:'l2-ph',icon:'ipho',title:'影像編輯',desc:'Photoshop、Lightroom',hide:[]},
-  {id:'l2-ve',icon:'ive',title:'影片編輯',desc:'Final Cut Pro、Premiere',hide:[]},
+  {id:'l2-dr',icon:'idr',title:'繪圖 2D',desc:'Procreate、Illustrator',hide:['iphone']},
+  {id:'l2-ph',icon:'ipho',title:'影像編輯',desc:'Photoshop、Lightroom',hide:['iphone']},
+  {id:'l2-ve',icon:'ive',title:'影片編輯',desc:'Final Cut Pro、Premiere',hide:['iphone']},
   {id:'l2-mu',icon:'imu',title:'音樂製作',desc:'Logic Pro、GarageBand',hide:['iphone']},
   {id:'l2-3d',icon:'i3d',title:'3D 建模構圖',desc:'Cinema 4D、Blender',hide:['iphone']},
   {id:'l2-cd',icon:'icd',title:'程式開發',desc:'Xcode、VSCode',hide:['iphone']},
-  {id:'l2-ai',icon:'iai',title:'大語言模型開發',desc:'AI 訓練、本地 LLM',hide:['iphone']}
+  {id:'l2-ai',icon:'iai',title:'大語言模型開發',desc:'AI 訓練、本地 LLM',hide:['iphone']},
+  {id:'l2-cam',icon:'icam',title:'專業攝影',desc:'三鏡頭系統、ProRAW、微距',hide:['macbook','ipad']},
+  {id:'l2-vid',icon:'ive',title:'專業錄影',desc:'ProRes 錄影、電影模式',hide:['macbook','ipad']},
+  {id:'l2-scr',icon:'iscr',title:'大螢幕需求',desc:'6.9 吋、長時間閱讀',hide:['macbook','ipad']},
+  {id:'l2-bat',icon:'ibat',title:'超長續航',desc:'重度使用、出差旅行',hide:['macbook','ipad']},
+  {id:'l2-spd',icon:'ispd',title:'極致效能',desc:'重度遊戲、多工處理',hide:['macbook','ipad']}
 ];
 
 const RULES={
@@ -205,7 +218,8 @@ const RULES={
   },
   iphone:{
     'l1-ge':'iphone-17','l1-vi':'iphone-17',
-    'l2-dr':'iphone-17-pro','l2-ph':'iphone-17-pro','l2-ve':'iphone-17-pro'
+    'l2-cam':'iphone-17-pro','l2-vid':'iphone-17-pro',
+    'l2-scr':'iphone-17-pro-max','l2-bat':'iphone-17-pro-max','l2-spd':'iphone-17-pro'
   }
 };
 
@@ -221,7 +235,7 @@ const CUST={
   },
   iphone:{
     student:{'l1-ge':'iphone-16e'},
-    creator:{'l1-vi':'iphone-17-pro-max','l2-ve':'iphone-17-pro-max','l2-ph':'iphone-17-pro-max'},
+    creator:{'l1-vi':'iphone-17-pro-max','l2-cam':'iphone-17-pro-max','l2-vid':'iphone-17-pro-max'},
     elder:{'l1-ge':'iphone-17'}
   }
 };
@@ -318,9 +332,9 @@ function updRes(){
   const ptR=RULES[S.pt]||{};
   let pid=ptR[need]||ptR[S.l1];
   if(!pid){hideRes();return;}
-  if(S.ct){
+  if(S.ct && !S.l2){
     const cr=CUST[S.pt]?.[S.ct]||{};
-    if(cr[need])pid=cr[need];
+    if(cr[S.l1])pid=cr[S.l1];
   }
   const prod=PRODUCTS.find(p=>p.id===pid);
   if(!prod){hideRes();return;}
@@ -387,6 +401,20 @@ function selProd(id,el){
   setTimeout(()=>det.scrollIntoView({behavior:'smooth',block:'start'}),100);
   // 追蹤產品直查
   trackEvent('Product Direct', 'product_viewed', p.name, 1);
+}
+</script>
+<script>
+// 註冊 Service Worker（PWA 支援）
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/moltbot-pro/sw.js')
+      .then(registration => {
+        console.log('✅ PWA Service Worker 已註冊');
+      })
+      .catch(error => {
+        console.log('Service Worker 註冊失敗:', error);
+      });
+  });
 }
 </script>
 </body></html>
