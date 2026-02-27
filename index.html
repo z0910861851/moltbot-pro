@@ -684,9 +684,9 @@ ${pts}
 請針對這位客人，挑出最有共鳴的 2-3 個賣點，包裝成自然的銷售對話。`;
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://anthropic-proxy.z0910861851.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': 'sk-ant-api03-B9c22azCHvlgfFJULJIQ2IL28__TySirR0xsotPmTqkz-FdINb0yMPKLPvuJH'+'DNS8AjsFI2Hei1EGGeQ4FlK_Q-OvvihgAA', 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 600,
@@ -747,9 +747,9 @@ async function analyzeCustomer() {
   btn.disabled = true;
   btnText.innerHTML = '<span class="ai-spinner"></span> 分析中';
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://anthropic-proxy.z0910861851.workers.dev', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': 'sk-ant-api03-B9c22azCHvlgfFJULJIQ2IL28__TySirR0xsotPmTqkz-FdINb0yMPKLPvuJH'+'DNS8AjsFI2Hei1EGGeQ4FlK_Q-OvvihgAA', 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 400,
