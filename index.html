@@ -830,20 +830,7 @@ function applyAIResult(r) {
   setTimeout(() => document.querySelector('.rp')?.scrollIntoView({ behavior:'smooth', block:'start' }), 500);
 }
 </script>
-<script>
-// 註冊 Service Worker（PWA 支援）
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/moltbot-pro/sw.js')
-      .then(registration => {
-        console.log('✅ PWA Service Worker 已註冊');
-      })
-      .catch(error => {
-        console.log('Service Worker 註冊失敗:', error);
-      });
-  });
-}
-</script>
+
 <script>
 // 初始化 Lucide 圖示（用 window.onload 確保 CDN 已載入）
 window.addEventListener('load', () => {
