@@ -862,7 +862,7 @@ async function analyzeCustomer() {
   btnText.textContent = '分析客人';
 }
 
-function applyAIResult(r, input) {
+function applyAIResult(r, input = '') {
   S = { pt: null, ct: null, bg: null, l1: null, l2: null };
   document.querySelectorAll('.cd,.no').forEach(el => el.classList.remove('on','s1','s2','bg-on-low','bg-on-mid'));
   lock('bCust'); lock('bBudget'); lock('bL1'); lock('bL2'); hideRes();
