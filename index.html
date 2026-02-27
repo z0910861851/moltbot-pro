@@ -202,6 +202,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg
 .ai-tag-nd{background:rgba(255,149,0,.15);color:var(--or);}
 .ai-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+.mic-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:11px 14px;color:var(--tx);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mic-btn:hover{background:rgba(255,255,255,.15);}
+.mic-btn.recording{background:rgba(255,59,48,.2);border-color:rgba(255,59,48,.5);color:#ff3b30;animation:pulse 1s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,.4);}50%{box-shadow:0 0 0 8px rgba(255,59,48,0);}}
+.mic-status{font-size:11px;color:var(--mu);margin-top:6px;min-height:16px;transition:all .2s;}
+.mic-status.active{color:#ff3b30;}
 </style>
 <svg style="display:none"><defs>
 <symbol id="iz" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z" fill="white"/></symbol>
@@ -271,11 +277,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg
   <div class="ai-bar-in">
     <div class="ai-label"><i data-lucide="sparkles" style="width:14px;height:14px;vertical-align:-2px;margin-right:5px"></i>AI 快速分析 <span>NEW</span></div>
     <div class="ai-row">
-      <input class="ai-input" id="aiInput" type="text" placeholder="直接輸入客人說的話，例如：「我媽媽想買平板，她不太會用3C，預算一萬多」" onkeydown="if(event.key==='Enter')analyzeCustomer()">
+      <input class="ai-input" id="aiInput" type="text" placeholder="輸入或按麥克風收音，例如：「我媽媽想買平板，她不太會用3C，預算一萬多」" onkeydown="if(event.key==='Enter')analyzeCustomer()">
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="收音">
+        <svg id="micIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+      </button>
       <button class="ai-btn" id="aiBtn" onclick="analyzeCustomer()">
         <span id="aiBtnText">分析客人</span>
       </button>
     </div>
+    <div class="mic-status" id="micStatus"></div>
     <div class="ai-result" id="aiResult">
       <div class="ai-tags-row" id="aiTags"></div>
       <div class="ai-pitch-label"><i data-lucide="message-circle" style="width:12px;height:12px;vertical-align:-1px;margin-right:4px"></i>AI 個人化話術</div>
@@ -721,8 +731,88 @@ function renderSceneTalks(scenes) {
   if (window.refreshIcons) window.refreshIcons();
 }
 
+
+// ===== 語音收音功能 =====
+let recognition = null;
+let isRecording = false;
+
+function initSpeech() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return null;
+  const r = new SpeechRecognition();
+  r.lang = 'zh-TW';
+  r.continuous = true;
+  r.interimResults = true;
+  return r;
+}
+
+function toggleMic() {
+  const btn = document.getElementById('micBtn');
+  const status = document.getElementById('micStatus');
+  const input = document.getElementById('aiInput');
+
+  if (isRecording) {
+    // 停止收音
+    if (recognition) recognition.stop();
+    isRecording = false;
+    btn.classList.remove('recording');
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>';
+    status.textContent = '';
+    status.classList.remove('active');
+    if (window.refreshIcons) window.refreshIcons();
+    // 自動分析
+    if (input.value.trim()) analyzeCustomer();
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    status.textContent = '⚠️ 此瀏覽器不支援語音收音，請改用 Chrome';
+    return;
+  }
+
+  recognition = initSpeech();
+  let finalText = input.value.trim();
+
+  recognition.onstart = () => {
+    isRecording = true;
+    btn.classList.add('recording');
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>';
+    status.textContent = '🔴 收音中⋯ 再按一次停止並分析';
+    status.classList.add('active');
+    if (window.refreshIcons) window.refreshIcons();
+  };
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        finalText += e.results[i][0].transcript;
+      } else {
+        interim += e.results[i][0].transcript;
+      }
+    }
+    input.value = finalText + interim;
+  };
+
+  recognition.onerror = (e) => {
+    status.textContent = '收音失敗：' + e.error;
+    isRecording = false;
+    btn.classList.remove('recording');
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>';
+    status.classList.remove('active');
+    if (window.refreshIcons) window.refreshIcons();
+  };
+
+  recognition.onend = () => {
+    if (isRecording) recognition.start(); // 持續收音
+  };
+
+  recognition.start();
+}
+
 // ===== AI 快速分析功能 =====
-const AI_SYSTEM = `你是 Apple 授權經銷商的銷售 AI 助手。根據客人說的話，分析客人輪廓並自動選擇推薦設定。
+const AI_SYSTEM = `你是 Apple 授權經銷商的資深銷售 AI 助手。根據客人說的話，用你的理解力和語意判斷來分析客人輪廓。
 
 可選的產品類型(pt)：macbook, ipad, iphone
 可選的客群(ct)：student（學生）, office（上班族）, creator（創作者）, elder（長輩），不確定就填 null
@@ -730,13 +820,15 @@ const AI_SYSTEM = `你是 Apple 授權經銷商的銷售 AI 助手。根據客�
 可選的第一層需求(l1)：l1-ge（一般/上網）, l1-vi（看影片）, l1-do（文書，限macbook/ipad）, l1-co（課程，限macbook/ipad）
 可選的第二層需求(l2)：l2-dr（繪圖2D）, l2-ph（影像編輯）, l2-ve（影片編輯）, l2-mu（音樂）, l2-3d（3D建模）, l2-cd（程式開發）, l2-ai（AI開發）, l2-cam（專業攝影，限iphone）, l2-vid（專業錄影，限iphone）, l2-scr（大螢幕，限iphone）, l2-bat（超長續航，限iphone）, l2-spd（極致效能，限iphone），不確定就填 null
 
-預算判斷規則：
-- 提到「便宜」「便宜一點」「預算有限」「摳門」「省錢」「便宜的就好」→ bg=low
-- 提到「預算大概X萬」且數字偏低（iphone<25000, ipad<20000, mac<40000）→ bg=low
-- 提到「CP值」「划算」「不需要最貴的」→ bg=mid
-- 沒提到預算或說「不限」「最好的」→ bg=free
+預算判斷方式（用語意理解，不是死背關鍵字）：
+- bg=low：客人整體語意表達「想買最便宜的」「錢不夠多」「能省則省」「夠用就好」「買個基本的」等傾向，不管用什麼說法
+- bg=mid：客人表達「不需要最貴但也不要太差」「CP值」「中等」「普通」等傾向
+- bg=free：客人沒提到預算限制，或表達「要最好的」「不差錢」等傾向
+- 如果客人說了具體金額，根據該金額判斷（iphone<25000、ipad<20000、mac<40000 → low）
 
-請以 JSON 格式回答，不要加任何其他文字：
+判斷原則：理解客人說話的整體意圖和情境，不要只看單一詞彙。口語化、不完整的句子也要盡力理解。
+
+【重要】你只能輸出一個 JSON 物件，絕對不能有任何其他文字或說明。直接輸出 JSON，不要用\`\`\`包起來：
 {"pt":"產品類型","ct":"客群或null","bg":"預算","l1":"第一層需求","l2":"第二層需求或null","pitch":"針對這位客人量身打造的推薦話術，自然有溫度，50-80字，根據身份和需求個人化，不要提產品名稱"}`;
 
 async function analyzeCustomer() {
